@@ -1,0 +1,12 @@
+pypdf
+python-dotenv
+transformers
+einops
+accelerate
+langchain
+bitsandbytes
+sentence_transformers
+llama-index
+streamlit
+torch==2.0.0
+torchvision==0.15.1
