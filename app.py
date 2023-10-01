@@ -1,7 +1,7 @@
 import logging
 import streamlit as st
 import sys
-from llama_index import VectorStoreIndex, SimpleDirectoryReader, ServiceContext
+from llama_index import VectorStoreIndex, SimpleDirectoryReader, ServiceContext,StorageContext, load_index_from_storage
 from llama_index.llms import HuggingFaceLLM
 from dotenv import load_dotenv
 from llama_index.prompts.prompts import SimpleInputPrompt
@@ -11,10 +11,11 @@ from llama_index import LangchainEmbedding, ServiceContext
 from huggingface_hub import login
 logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 logging.getLogger().addHandler(logging.StreamHandler(stream=sys.stdout))
+
 st.title("RetailGPT")
 with st.chat_message("user"):
     st.write("Hello USer 👋 : Please wait while we initialize RetailGPT !")
-login(token="hf_qgpTStOWoLykTXmWmHBQsGLuOzvfWmRFFyQq")
+login(token="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")
 print("Here!!!")
 
 if "messages" not in st.session_state.keys(): # Initialize the chat message history
@@ -49,8 +50,11 @@ def load_data():
           llm=llm,
           embed_model=embed_model
         )
-
-        index = VectorStoreIndex.from_documents(documents, service_context=service_context)
+        storage_context = StorageContext.from_defaults(persist_dir="resume_index")
+        # Load index from the storage context
+        index = load_index_from_storage(storage_context=storage_context,service_context=service_context)
+        #index = VectorStoreIndex.from_documents(documents, service_context=service_context)
+        #index.storage_context.persist("resume_index")
         return index
 
 index = load_data()
